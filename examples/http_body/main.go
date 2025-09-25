@@ -62,7 +62,7 @@ func (ctx *pluginContext) NewHttpContext(contextID uint32) types.HttpContext {
 func (ctx *pluginContext) OnPluginStart(pluginConfigurationSize int) types.OnPluginStartStatus {
 	data, err := proxywasm.GetPluginConfiguration()
 	if err != nil {
-		proxywasm.LogCriticalf("error reading plugin configuration: %v", err)
+		proxywasm.LogCriticalf("OnPluginStart: error reading plugin configuration: %v", err)
 	}
 	ctx.shouldEchoBody = string(data) == "echo"
 	return types.OnPluginStartStatusOK
@@ -82,6 +82,7 @@ func (ctx *setBodyContext) OnHttpRequestHeaders(numHeaders int, endOfStream bool
 	mode, err := proxywasm.GetHttpRequestHeader("buffer-replace-at")
 	if err == nil && mode == "response" {
 		ctx.modifyResponse = true
+		proxywasm.LogInfof("OnHttpRequestHeaders: ctx.modifyResponse = true")
 	}
 
 	if _, err := proxywasm.GetHttpRequestHeader("content-length"); err != nil {
@@ -121,10 +122,10 @@ func (ctx *setBodyContext) OnHttpRequestBody(bodySize int, endOfStream bool) typ
 	// Being the body never been sent upstream so far, bodySize is the total size of the body received.
 	originalBody, err := proxywasm.GetHttpRequestBody(0, bodySize)
 	if err != nil {
-		proxywasm.LogErrorf("failed to get request body: %v", err)
+		proxywasm.LogErrorf("OnHttpRequestBody: failed to get request body: %v", err)
 		return types.ActionContinue
 	}
-	proxywasm.LogInfof("original request body: %s", string(originalBody))
+	proxywasm.LogInfof("OnHttpRequestBody: original request body: %s", string(originalBody))
 
 	switch ctx.bufferOperation {
 	case bufferOperationAppend:
@@ -135,7 +136,7 @@ func (ctx *setBodyContext) OnHttpRequestBody(bodySize int, endOfStream bool) typ
 		err = proxywasm.ReplaceHttpRequestBody([]byte(`[this is replaced body]`))
 	}
 	if err != nil {
-		proxywasm.LogErrorf("failed to %s request body: %v", ctx.bufferOperation, err)
+		proxywasm.LogErrorf("OnHttpRequestBody: failed to %s request body: %v", ctx.bufferOperation, err)
 		return types.ActionContinue
 	}
 	return types.ActionContinue
@@ -168,10 +169,10 @@ func (ctx *setBodyContext) OnHttpResponseBody(bodySize int, endOfStream bool) ty
 
 	originalBody, err := proxywasm.GetHttpResponseBody(0, bodySize)
 	if err != nil {
-		proxywasm.LogErrorf("failed to get response body: %v", err)
+		proxywasm.LogErrorf("OnHttpResponseBody: failed to get response body: %v", err)
 		return types.ActionContinue
 	}
-	proxywasm.LogInfof("original response body: %s", string(originalBody))
+	proxywasm.LogInfof("OnHttpResponseBody: original response body: %s", string(originalBody))
 
 	switch ctx.bufferOperation {
 	case bufferOperationAppend:
@@ -182,7 +183,7 @@ func (ctx *setBodyContext) OnHttpResponseBody(bodySize int, endOfStream bool) ty
 		err = proxywasm.ReplaceHttpResponseBody([]byte(`[this is replaced body]`))
 	}
 	if err != nil {
-		proxywasm.LogErrorf("failed to %s response body: %v", ctx.bufferOperation, err)
+		proxywasm.LogErrorf("OnHttpResponseBody: failed to %s response body: %v", ctx.bufferOperation, err)
 		return types.ActionContinue
 	}
 	return types.ActionContinue

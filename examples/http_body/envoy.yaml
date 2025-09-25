@@ -21,8 +21,10 @@ static_resources:
                       routes:
                         - match:
                             prefix: "/"
-                          route:
-                            cluster: echo
+                          direct_response:
+                            status: 200
+                            body:
+                              inline_string: "[Hello from main listener 18000]"
                 http_filters:
                   - name: envoy.filters.http.wasm
                     typed_config:
@@ -34,10 +36,10 @@ static_resources:
                             "@type": type.googleapis.com/google.protobuf.StringValue
                             value: "body-set"
                           vm_config:
-                            runtime: "envoy.wasm.runtime.v8"
+                            runtime: "envoy.wasm.runtime.wamr"
                             code:
                               local:
-                                filename: "./examples/http_body/main.wasm"
+                                filename: "./main.wasm"
                   - name: envoy.filters.http.router
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
@@ -63,8 +65,10 @@ static_resources:
                       routes:
                         - match:
                             prefix: "/"
-                          route:
-                            cluster: admin
+                          direct_response:
+                            status: 200
+                            body:
+                              inline_string: "[Hello from main listener 38140]"
                 http_filters:
                   - name: envoy.filters.http.wasm
                     typed_config:
@@ -76,46 +80,16 @@ static_resources:
                             "@type": type.googleapis.com/google.protobuf.StringValue
                             value: "echo"
                           vm_config:
-                            runtime: "envoy.wasm.runtime.v8"
+                            runtime: "envoy.wasm.runtime.wamr"
                             code:
                               local:
-                                filename: "./examples/http_body/main.wasm"
+                                filename: "./main.wasm"
                   - name: envoy.filters.http.router
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
 
-
-  clusters:
-    - name: echo
-      connect_timeout: 5000s
-      type: strict_dns
-      lb_policy: round_robin
-      load_assignment:
-        cluster_name: echo
-        endpoints:
-          - lb_endpoints:
-              - endpoint:
-                  address:
-                    socket_address:
-                      address: 0.0.0.0
-                      port_value: 38140
-    - name: admin
-      connect_timeout: 5000s
-      type: strict_dns
-      lb_policy: round_robin
-      load_assignment:
-        cluster_name: admin
-        endpoints:
-          - lb_endpoints:
-              - endpoint:
-                  address:
-                    socket_address:
-                      address: 0.0.0.0
-                      port_value: 8001
-
-
 admin:
-  access_log_path: "/dev/null"
+  access_log_path: "/dev/stdout"
   address:
     socket_address:
       address: 0.0.0.0
