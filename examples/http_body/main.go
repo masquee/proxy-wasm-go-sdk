@@ -201,11 +201,13 @@ type echoBodyContext struct {
 func (ctx *echoBodyContext) OnHttpRequestBody(bodySize int, endOfStream bool) types.Action {
 	ctx.totalRequestBodySize = bodySize
 	if !endOfStream {
+		proxywasm.LogInfof("OnHttpRequestBody: endOfStream = false, bodySize: %d", bodySize)
 		// Wait until we see the entire body to replace.
 		return types.ActionPause
 	}
 	// Send the request body as the response body.
 	body, _ := proxywasm.GetHttpRequestBody(0, bodySize)
+	proxywasm.LogInfof("OnHttpRequestBody: body: %s", string(body))
 	if err := proxywasm.SendHttpResponse(200, nil, body, -1); err != nil {
 		panic(err)
 	}
