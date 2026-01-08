@@ -34,7 +34,7 @@ func (*vmContext) OnVMStart(vmConfigurationSize int) types.OnVMStartStatus {
 		proxywasm.LogCriticalf("error reading vm configuration: %v", err)
 	}
 
-	proxywasm.LogInfof("vm config: %s", string(data))
+	proxywasm.LogInfof("[OnVMStart][proxywasm.GetVMConfiguration]: %s", string(data))
 	return types.OnVMStartStatusOK
 }
 
@@ -57,6 +57,6 @@ func (ctx pluginContext) OnPluginStart(pluginConfigurationSize int) types.OnPlug
 		proxywasm.LogCriticalf("error reading plugin configuration: %v", err)
 	}
 
-	proxywasm.LogInfof("plugin config: %s", string(data))
+	proxywasm.LogInfof("[OnPluginStart][proxywasm.GetPluginConfiguration]: %s", string(data))
 	return types.OnPluginStartStatusOK
 }

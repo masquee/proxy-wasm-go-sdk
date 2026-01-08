@@ -1,10 +1,16 @@
+admin:
+  address:
+    socket_address:
+      protocol: TCP
+      address: 0.0.0.0
+      port_value: 9901
 static_resources:
   listeners:
     - name: main
       address:
         socket_address:
           address: 0.0.0.0
-          port_value: 18000
+          port_value: 10000
       filter_chains:
         - filters:
             - name: envoy.http_connection_manager
@@ -46,14 +52,7 @@ static_resources:
                               }
                           code:
                             local:
-                              filename: "./examples/vm_plugin_configuration/main.wasm"
+                              filename: "/etc/envoy/main.wasm"
                   - name: envoy.filters.http.router
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
-
-admin:
-  access_log_path: "/dev/null"
-  address:
-    socket_address:
-      address: 0.0.0.0
-      port_value: 8001
