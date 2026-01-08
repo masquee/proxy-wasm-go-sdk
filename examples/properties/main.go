@@ -35,6 +35,7 @@ type properties struct {
 }
 
 var propertyPrefix = []string{
+	"xds",
 	"route_metadata",
 	"filter_metadata",
 	"envoy.filters.http.wasm",

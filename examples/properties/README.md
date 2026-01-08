@@ -4,7 +4,7 @@ this example prevalidates the authentication header via the usage of properties 
 
 ### message on clients
 ```
-curl localhost:18000/one -v
+curl localhost:18000/anything/one -v
 *   Trying 127.0.0.1:18000...
 * Connected to localhost (127.0.0.1) port 18000 (#0)
 > GET /one HTTP/1.1
@@ -18,7 +18,7 @@ curl localhost:18000/one -v
 < content-length: 0
 < 
 
-curl localhost:18000/one -v -H 'cookie: value'
+curl localhost:18000/anything/one -v -H 'cookie: value'
 *   Trying 127.0.0.1:18000...
 * Connected to localhost (127.0.0.1) port 18000 (#0)
 > GET /one HTTP/1.1
@@ -36,7 +36,7 @@ curl localhost:18000/one -v -H 'cookie: value'
 < 
 example body
 
-curl localhost:18000/two -v
+curl localhost:18000/anything/two -v
 *   Trying 127.0.0.1:18000...
 * Connected to localhost (127.0.0.1) port 18000 (#0)
 > GET /two HTTP/1.1
@@ -50,7 +50,7 @@ curl localhost:18000/two -v
 < content-length: 0
 < 
 
-curl localhost:18000/two -v -H 'authorization: token'
+curl localhost:18000/anything/two -v -H 'authorization: token'
 *   Trying 127.0.0.1:18000...
 * Connected to localhost (127.0.0.1) port 18000 (#0)
 > GET /two HTTP/1.1
@@ -68,7 +68,7 @@ curl localhost:18000/two -v -H 'authorization: token'
 < 
 example body
 
-curl localhost:18000/three -v
+curl localhost:18000/anything/three -v
 *   Trying 127.0.0.1:18000...
 * Connected to localhost (127.0.0.1) port 18000 (#0)
 > GET /three HTTP/1.1
