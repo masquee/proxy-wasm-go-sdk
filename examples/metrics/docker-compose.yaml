@@ -1,0 +1,26 @@
+services:
+  envoy:
+    image: envoyproxy/envoy-dev:4f5386abdc9a52340a892e56ca8a50a6e196c98f
+    entrypoint: /usr/local/bin/envoy
+    # 注意这里对 wasm 开启了 debug 级别日志，正式部署时则默认 info 级别
+    command: -c /etc/envoy/envoy.yaml --component-log-level wasm:debug
+    depends_on:
+      - httpbin
+    networks:
+      - wasm_test
+    ports:
+      - "10000:10000"
+      - "9901:9901"
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+      - ./main.wasm:/etc/envoy/main.wasm
+
+  httpbin:
+    image: kennethreitz/httpbin:latest
+    networks:
+      - wasm_test
+    ports:
+      - "12345:80"
+
+networks:
+  wasm_test: {}

@@ -76,6 +76,7 @@ func (ctx *metricHttpContext) OnHttpRequestHeaders(numHeaders int, endOfStream b
 			// The extraction rule is defined in envoy.yaml as a bootstrap configuration.
 			// See https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/metrics/v3/stats.proto#config-metrics-v3-statsconfig.
 			fqn := fmt.Sprintf("custom_header_value_counts_%s=%s_reporter=wasmgosdk", customHeaderValueTagKey, customHeaderValue)
+			proxywasm.LogInfof("%s", fqn)
 			counter = proxywasm.DefineCounterMetric(fqn)
 			counters[customHeaderValue] = counter
 		}

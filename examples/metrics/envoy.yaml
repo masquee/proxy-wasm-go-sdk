@@ -1,3 +1,9 @@
+admin:
+  address:
+    socket_address:
+      protocol: TCP
+      address: 0.0.0.0
+      port_value: 9901
 stats_config:
   stats_tags:
     # Envoy extracs the first matching group as a value.
@@ -7,14 +13,13 @@ stats_config:
       regex: '(_value=([a-zA-Z]+))'
     - tag_name: reporter
       regex: '(_reporter=([a-zA-Z]+))'
-
 static_resources:
   listeners:
     - name: main
       address:
         socket_address:
           address: 0.0.0.0
-          port_value: 18000
+          port_value: 10000
       filter_chains:
         - filters:
             - name: envoy.http_connection_manager
@@ -46,14 +51,7 @@ static_resources:
                             runtime: "envoy.wasm.runtime.v8"
                             code:
                               local:
-                                filename: "./examples/metrics/main.wasm"
+                                filename: "/etc/envoy/main.wasm"
                   - name: envoy.filters.http.router
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
-
-admin:
-  access_log_path: "/dev/null"
-  address:
-    socket_address:
-      address: 0.0.0.0
-      port_value: 8001
